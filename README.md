@@ -1,0 +1,2 @@
+# aksjer
+Porteføljeanalysering - ikke rådgivning

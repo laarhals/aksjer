@@ -1,0 +1,131 @@
+# ╔══════════════════════════════════════════════════════════════╗
+# ║          OSLO BØRS PORTFOLIO ANALYZER — KONFIGURASJON        ║
+# ║                                                              ║
+# ║  Rediger denne filen for å oppdatere porteføljen din.        ║
+# ║  Lagre filen og kjør analyze_portfolio.py på nytt.           ║
+# ║                                                              ║
+# ║  FORMAT:  TICKER = antall_shares                             ║
+# ║  EKSEMPEL: "EQNR.OL" = 100                                   ║
+# ╚══════════════════════════════════════════════════════════════╝
+
+
+# ──────────────────────────────────────────────────────────────
+# GENERELLE INNSTILLINGER
+# ──────────────────────────────────────────────────────────────
+[settings]
+
+# Navn på porteføljen (vises øverst i rapporten)
+portfolio_name = "Min Oslo Børs-portefølje"
+
+# Valuta (kun for visning)
+currency = "NOK"
+
+# Maks antall shares fra screener (0 = alle på Oslo Børs)
+# Sett lavere (f.eks. 50) for raskere kjøretid
+screener_max_tickers = 0
+
+# Bruk cache for ticker-listen (anbefalt: true)
+# Cache er gyldig i 12 timer og gjør oppstart raskere
+use_ticker_cache = true
+
+# Bruk Playwright for å hente tickers direkte fra Euronext
+# Krever: pip install playwright && playwright install chromium
+# Anbefales for fullstendig Oslo Børs-dekning (alle ~290 shares)
+use_playwright = false
+
+# Outputfil for HTML-rapport
+output_file = "index.html"
+
+# Antall sekunders pause mellom API-kall (reduser ved treg kjøring)
+api_delay = 0.5
+
+
+# ──────────────────────────────────────────────────────────────
+# MIN PORTEFØLJE
+# ──────────────────────────────────────────────────────────────
+# Format:  "TICKER.OL" = antall_shares
+#
+# Finn ticker-symbolet på:
+#   Oslo Børs:  https://live.euronext.com/nb/markets/oslo/equities/list
+#   Yahoo Finance: https://finance.yahoo.com  (søk på selskapet + Oslo)
+#
+# Tipsene "purchase_price" og "note" er valgfrie — brukes ikke i analysen,
+# men hjelper deg å holde oversikt.
+# ──────────────────────────────────────────────────────────────
+[portfolio]
+
+#                    Antall   Kjøpskurs   Notat
+"ABG.OL"  = { shares = 1600, purchase_price = 7.50, note = "" }
+"AKRBP.OL"   = { shares = 160, purchase_price = 265.00, note = "" }
+"KIT.OL"   = { shares = 225, purchase_price = 19.00, note = "" }
+"KCC.OL"  = { shares = 200,  purchase_price = 90.00, note = "" }
+"SALM.OL"   = { shares = 40,  purchase_price = 550.00, note = "" }
+"MING.OL"   = { shares = 200, purchase_price = 119.00,  note = "" }
+"STB.OL"  = { shares = 250,  purchase_price = 165.00, note = "" }
+"TEL.OL" = { shares = 170,  purchase_price = 150.00, note = "" }
+
+# ── Legg til flere shares under her ──
+# "KOG.OL"   = { shares = 10,  purchase_price = 0.00,  note = "" }
+# "GJF.OL"   = { shares = 25,  purchase_price = 0.00,  note = "" }
+# "AKERBP.OL"= { shares = 75,  purchase_price = 0.00,  note = "" }
+# "STB.OL"   = { shares = 50,  purchase_price = 0.00,  note = "" }
+# "FRO.OL"   = { shares = 100, purchase_price = 0.00,  note = "" }
+
+
+# ──────────────────────────────────────────────────────────────
+# MEGLERHUS-INNSTILLINGER
+# ──────────────────────────────────────────────────────────────
+[brokers]
+
+# Hvilke meglerhus skal inkluderes i favorittportefølje-fanen?
+active = [
+    "Arctic Securities",
+    "Fearnley Securities",
+    "SpareBank 1 Markets",
+    "DNB Markets",
+    "Carnegie",
+    "Pareto Securities",
+    "Norne Securities",
+    "Nordea Markets",
+    "Clarksons",
+]
+
+# BørsXtra/Xtrainvestor e-post-integrasjon (avansert, valgfritt)
+# Sett enabled = true og fyll inn IMAP-detaljer for live meglerhus-data
+[brokers.borsxtra]
+enabled = true
+imap_server = "imap.gmail.com"
+email = "andreasrode@gmail.com"
+# NB: Bruk app-passord (ikke vanlig passord): https://myaccount.google.com/apppasswords
+app_password = "qhgt mhgz tezt kall"
+sender_filter = "borsxtra"   # Filtrer e-poster fra denne avsenderadressen
+
+
+# ──────────────────────────────────────────────────────────────
+# SCORE-INNSTILLINGER
+# ──────────────────────────────────────────────────────────────
+[scoring]
+
+# Vekting mellom teknisk og fundamental analyse (må summere til 1.0)
+technical_weight  = 0.50
+fundamental_weight = 0.50
+
+# Grenseverdier for score-farger i rapporten
+score_positive  = 7.0   # >= denne → grønn (KJØP)
+score_neutral   = 5.0   # >= denne → gul (HOLD)
+# Under score_neutral → rød (SELG)
+
+
+# ──────────────────────────────────────────────────────────────
+# MINERVINI-SCREENER INNSTILLINGER
+# ──────────────────────────────────────────────────────────────
+[minervini]
+
+# Fundamentale minstekrav
+min_eps_growth_pct   = 20.0   # Minimum EPS-vekst (%) for å bestå
+min_revenue_growth_pct = 15.0 # Minimum omsetningsvekst (%)
+min_roe_pct          = 17.0   # Minimum ROE (%)
+
+# Tekniske minstekrav
+max_pct_from_high    = 25.0   # Maks % fra 52-ukers topp
+min_rs_rating        = 70.0   # Minimum relativ styrke-rating
